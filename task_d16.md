@@ -61,10 +61,10 @@ class Article(models.Model):
         ('dd', 'ДД'),
         ('privater', 'Торговцы'),
         ('gildemaster'. 'Гилдмастеры'),
-        ('quest', 'Квестгиверы’),
+        ('quest', 'Квестгиверы'),
         ('smith', 'Кузнецы'),
-        ('tanner', 'Кожевники’),
-        ('potion', 'Зельевары’),
+        ('tanner', 'Кожевники'),
+        ('potion', 'Зельевары'),
         ('spellmaster', 'Мастера заклинаний'),
     )
     author = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -74,7 +74,7 @@ class Article(models.Model):
     upload = models.FileField(upload_tn='uploads/')
 
 class UserResponse(models.Model):
-    author = models.OneToOneFieldCUser, on_delete=models.CASCADE)
+    author = models.OneToOneField(User, on_delete=models.CASCADE)
     text = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
