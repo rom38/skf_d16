@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'markdownx',
 
     'articles',
+    'reguser',
 ]
 
 MIDDLEWARE = [
