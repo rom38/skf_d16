@@ -1,0 +1,75 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'default.html' %}
+
+{% block title %}
+Список статей
+{% endblock title %}
+
+
+{% block content %}
+<h1>Все статьи</h1>
+
+
+   <hr>
+<!-- Выводим новости, только если они есть с помощью тега if -->
+{% if articles %}
+<table class="table">
+    <tr>
+        <!-- <th>ID</th> -->
+        <th>Заголовок</th>
+        <th>Дата публикации</th>
+        <th>Категория</th>
+
+    </tr>
+
+
+    {% for article in articles %}
+    <tr>
+        <!-- <td><a href="/news/{{neww.id}}"> {{neww.id }}</a></td> -->
+        <td><a href="{% url 'article_detail' article.id %}">{{ article.title}}</a></td>
+        <td>{{ article.time_create | date:'d M Y'}}</td>
+        <td>{{ article.get_category_display}}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{# Добавляем пагинацию на страницу #}
+
+{# Информация о предыдущих страницах #}
+{% if page_obj.has_previous %}
+    <a href="?page=1">1</a>
+    {% if page_obj.previous_page_number != 1 %}
+        ...
+        <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+{% endif %}
+
+{# Информация о текущей странице #}
+{{ page_obj.number }}
+
+{# Информация о следующих страницах #}
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+    {% if paginator.num_pages != page_obj.next_page_number %}
+        ...
+        <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+    {% endif %}
+{% endif %}
+
+{% else %}
+    <!-- Если новостей нет, говорим, что новостей нет ;) -->
+    <h2>Статей нет!</h2>
+    {% if perms.news.add_article %}
+        {% if author_user %}
+            <a href="{% url 'article_create' %}" class="btn btn-primary">Написать новость</a>
+        {% endif %}
+    {% endif %}
+{% endif %}
+<p></p>
+<div>
+    {% if user.is_authenticated %}
+        <a href="{% url 'article_create' %}" class="btn btn-primary">Написать новость</a>
+    {% endif %}
+</div>
+{% endblock content %}
