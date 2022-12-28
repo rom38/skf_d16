@@ -27,6 +27,11 @@ class Article(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     # upload = models.FileField(upload_to='uploads/')
 
+    def __str__(self):
+        return f'{self.title} {self.category}'
+
+    def get_absolute_url(self):
+        return reverse('article_detail', args=[str(self.id)])
 
 class UserResponse(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE)
