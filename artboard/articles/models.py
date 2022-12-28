@@ -20,7 +20,8 @@ class Article(models.Model):
         ('potion', 'Зельевары'),
         ('spellmaster', 'Мастера заклинаний'),
     )
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    User = get_user_model()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=64)
     text = MarkdownxField()
     category = models.CharField(max_length=11, choices=TYPE, default='tank')
