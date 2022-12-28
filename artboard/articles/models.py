@@ -24,6 +24,7 @@ class Article(models.Model):
     title = models.CharField(max_length=64)
     text = MarkdownxField()
     category = models.CharField(max_length=11, choices=TYPE, default='tank')
+    time_create = models.DateTimeField(auto_now_add=True)
     # upload = models.FileField(upload_to='uploads/')
 
 
