@@ -1,4 +1,6 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+
 
 from markdownx.models import MarkdownxField
 
@@ -34,7 +36,9 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('article_detail', args=[str(self.id)])
 
+
 class UserResponse(models.Model):
+    User = get_user_model()
     author = models.OneToOneField(User, on_delete=models.CASCADE)
     text = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)

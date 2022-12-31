@@ -18,11 +18,14 @@ from django.urls import path
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.conf import settings
-
-
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/articles/')),
     path('admin/', admin.site.urls),
     path('markdownx/', include('markdownx.urls')),
+    path('articles/', include('articles.urls')),
+    path('reguser/', include('reguser.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ]
