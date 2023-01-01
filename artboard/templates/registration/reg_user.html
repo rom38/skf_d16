@@ -1,0 +1,14 @@
+{% extends 'default.html' %}
+
+{% block content %}
+    <h1>Register new user</h1>
+    <hr>
+
+    <form  action="{% url 'reg_user' %}" method="post">
+      <table class="table">
+        {{ form.as_table }}
+        {% csrf_token %}
+        </table>
+    <button type="submit" class="btn btn-success">submit</button>
+    </form>
+{% endblock %}
