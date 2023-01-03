@@ -1,0 +1,27 @@
+{% extends "default.html" %}
+
+{% block content %}
+
+
+<form method="post" action="{% url 'verify_email_2' %}">
+{% csrf_token %}
+<table class="table">
+    {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+    </div>
+    {% endfor %}
+<tr>
+    <td>Токен: </td>
+    <td>{{ form.rnd_str }}</td>
+</tr>
+</table>
+
+<input type="submit" value="verify">
+{# <input type="hidden" name="next" value="{{ next }}"> #}
+</form>
+
+{# Assumes you set up the password_reset view in your URLconf #}
+{# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
+
+{% endblock %}

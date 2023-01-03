@@ -18,6 +18,11 @@
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 <table class="table">
+    {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+    </div>
+    {% endfor %}
 <tr>
     <td>Имя пользователя</td>
     <td>{{ form.username }}</td>

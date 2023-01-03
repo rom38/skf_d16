@@ -1,8 +1,12 @@
 from django.urls import path
+from django.views.generic import TemplateView
 # from django.contrib.auth import views as auth_views
 # Импортируем созданное нами представление
 from .views import ArtLogoutView
 from .views import ArtLoginView
+from .views import RegUserView
+from .views import EmailVerify
+from .views import EmailVerify2
 
 
 urlpatterns = [
@@ -14,6 +18,33 @@ urlpatterns = [
    # Для этого вызываем метод as_view.
     path('logout/', ArtLogoutView.as_view(), name='logout'),
     path('login/', ArtLoginView.as_view(), name='login'),
+    path('reg_user/', RegUserView.as_view(), name='reg_user'),
+    path(
+        'confirm_email/',
+        TemplateView.as_view(template_name='registration/confirm_email.html'),
+        name='confirm_email'
+    ),
+    path(
+        'verify_email/<uidb64>/<token>/',
+        EmailVerify.as_view(),
+        name='verify_email',
+            ),
+    path(
+        'verify_email_2/',
+        EmailVerify2.as_view(),
+        name='verify_email_2',
+            ),
+    path(
+        'invalid_verify/',
+        TemplateView.as_view(template_name='registration/invalid_verify.html'),
+        name='invalid_verify'
+    ),
+    path(
+        'not_verified_email/',
+        TemplateView.as_view(template_name='registration/not_verified_email.html'),
+        name='not_verified_email'
+    ),
+
 #    path('', ArticleList.as_view(), name='article_list'),
 #    path('<int:pk>', ArticleDetail.as_view(), name='article_detail'),
 # #    path('search/', NewsSearch.as_view()),

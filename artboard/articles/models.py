@@ -1,14 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-
+from django.db import models
 
 from markdownx.models import MarkdownxField
 
-from django.db import models
 
 # Create your models here.
-
-
 class Article(models.Model):
     TYPE = (
         ('tank', 'Танки'),
@@ -43,4 +40,3 @@ class UserResponse(models.Model):
     text = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
-

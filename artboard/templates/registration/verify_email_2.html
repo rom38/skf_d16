@@ -1,0 +1,9 @@
+{% autoescape off %}
+
+Здравствуйте {{ user.get_username }},
+Чтобы закончить регистрацию, пожалуйста перейдите по адресу http://{{ domain }}{% url 'verify_email_2' %}, и Введите
+следующий код,
+
+{{ rnd_str }}
+
+{% endautoescape %}

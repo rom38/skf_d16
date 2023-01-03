@@ -7,7 +7,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-# from users.utils import send_email_for_verify
+from .utils import send_email_for_verify
 
 User = get_user_model()
 
@@ -24,6 +24,9 @@ User = get_user_model()
 #                 username=username,
 #                 password=password,
 #             )
+#             if self.user_cache is None:
+#                 raise self.get_invalid_login_error()
+
 #             if not self.user_cache.email_verify:
 #                 send_email_for_verify(self.request, self.user_cache)
 #                 raise ValidationError(
@@ -31,8 +34,6 @@ User = get_user_model()
 #                     code='invalid_login',
 #                 )
 
-#             if self.user_cache is None:
-#                 raise self.get_invalid_login_error()
 #             else:
 #                 self.confirm_login_allowed(self.user_cache)
 
@@ -49,3 +50,11 @@ class UserCreationForm(DjangoUserCreationForm):
     class Meta(DjangoUserCreationForm.Meta):
         model = User
         fields = ("username", "email")
+
+
+class EmailVerifyForm(forms.Form):
+    rnd_str = forms.CharField(
+        label=_("Token"),
+        max_length=10,
+        strip=True
+        )
