@@ -2,6 +2,17 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
+from django.contrib.sessions.models import Session
+
+
+class SessionAdmin(admin.ModelAdmin):
+    def _session_data(self, obj):
+        return obj.get_decoded()
+    list_display = ['session_key', '_session_data', 'expire_date']
+
+
+admin.site.register(Session, SessionAdmin)
+
 
 # from reguser.forms import UserCreationForm
 

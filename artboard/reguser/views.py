@@ -92,7 +92,7 @@ class EmailVerify(View):
             except KeyError:
                 context['error'] = (
                     'такого токена не существует, '
-                    'возможно вы ошиблись, повторите ввод, либо повторно'
+                    'возможно вы ошиблись, либо сессия закончилась, повторите ввод, либо повторно'
                     'выполните вход'
                     )
                 return render(request, self.template_name, context)
