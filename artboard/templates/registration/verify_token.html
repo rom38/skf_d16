@@ -3,8 +3,12 @@
 {% block content %}
 
 
-<form method="post" action="{% url 'verify_email_2' %}">
+<form method="post" action="{% url 'verify_email' %}">
 {% csrf_token %}
+{% if error %}
+<p>{{error}}</p>
+
+{% endif %}
 <table class="table">
     {% for field in form %}
     <div class="fieldWrapper">

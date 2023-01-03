@@ -6,7 +6,6 @@ from .views import ArtLogoutView
 from .views import ArtLoginView
 from .views import RegUserView
 from .views import EmailVerify
-from .views import EmailVerify2
 
 
 urlpatterns = [
@@ -25,14 +24,9 @@ urlpatterns = [
         name='confirm_email'
     ),
     path(
-        'verify_email/<uidb64>/<token>/',
+        'verify_email/',
         EmailVerify.as_view(),
         name='verify_email',
-            ),
-    path(
-        'verify_email_2/',
-        EmailVerify2.as_view(),
-        name='verify_email_2',
             ),
     path(
         'invalid_verify/',

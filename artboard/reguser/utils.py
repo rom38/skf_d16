@@ -38,7 +38,7 @@ def send_email_for_verify_2(request, user):
         'rnd_str': rnd_str_for_email,
     }
     message = render_to_string(
-        'registration/verify_email_2.html',
+        'registration/verify_email.html',
         context=context,
     )
     email = EmailMessage(

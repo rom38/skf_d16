@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth import logout
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
@@ -14,7 +13,6 @@ from django.core.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_decode
 
 from .forms import UserCreationForm, EmailVerifyForm
-from .utils import send_email_for_verify
 from .utils import send_email_for_verify_2
 # Create your views here.
 
@@ -29,18 +27,13 @@ class ArtLoginView(LoginView):
     form_class = AuthenticationForm
 
     def form_valid(self, form):
-        # checkbox = form.cleaned_data['required_checkbox']
         user = form.get_user()
         print(f'user_name: {user.username}')
         print(f'user_name: {user.email_verify}')
         if not user.email_verify:
             send_email_for_verify_2(self.request, user)
-            #return redirect('not_verified_email')
-            return redirect('verify_email_2')
-            raise ValidationError(
-                    'Email not verify, check your email',
-                    code='invalid_login',
-                )
+            return redirect('verify_email')
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -69,7 +62,7 @@ class RegUserView(View):
             # user = authenticate(email=email, password=password)
             user = authenticate(username=username, password=password)
             send_email_for_verify_2(request, user)
-            return redirect('verify_email_2')
+            return redirect('verify_email')
         context = {
             'form': form
         }
@@ -77,31 +70,8 @@ class RegUserView(View):
 
 
 class EmailVerify(View):
-
-    def get(self, request, uidb64, token):
-        user = self.get_user(uidb64)
-
-        if user is not None and token_generator.check_token(user, token):
-            user.email_verify = True
-            user.save()
-            login(request, user)
-            return redirect('article_list')
-        return redirect('invalid_verify')
-
-    @staticmethod
-    def get_user(uidb64):
-        try:
-            # urlsafe_base64_decode() decodes to bytestring
-            uid = urlsafe_base64_decode(uidb64).decode()
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError,
-                User.DoesNotExist, ValidationError):
-            user = None
-        return user
-
-
-class EmailVerify2(View):
     template_name = 'registration/verify_token.html'
+
     def get(self, request):
         context = {
             'form': EmailVerifyForm()
@@ -110,19 +80,29 @@ class EmailVerify2(View):
 
     def post(self, request):
         form = EmailVerifyForm(request.POST)
+        context = {
+            'form': form,
+            'error': ''
+        }
 
         if form.is_valid():
             rnd_str = form.cleaned_data.get('rnd_str')
-            user_id, token = request.session[rnd_str]
+            try:
+                user_id, token = request.session.pop(rnd_str)
+            except KeyError:
+                context['error'] = (
+                    'такого токена не существует, '
+                    'возможно вы ошиблись, повторите ввод, либо повторно'
+                    'выполните вход'
+                    )
+                return render(request, self.template_name, context)
+
             user = self.get_user(user_id)
             if user is not None and token_generator.check_token(user, token):
                 user.email_verify = True
                 user.save()
                 login(request, user)
                 return redirect('confirm_email')
-        context = {
-            'form': form
-        }
         return render(request, self.template_name, context)
 
     @staticmethod
@@ -134,6 +114,3 @@ class EmailVerify2(View):
                 User.DoesNotExist, ValidationError):
             user = None
         return user
-
-# {{ request.path }}  #  -without GET parameters
-# {{ request.get_full_path }}  # - with GET parameters
