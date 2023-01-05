@@ -1,7 +1,8 @@
 from django.urls import path
 # Импортируем созданное нами представление
 from .views import (
-   ArticleList, ArticleDetail, ArticleCreate, ArticleUpdate, ArticleDelete)
+   ArticleList, ArticleDetail, ArticleCreate,
+   ArticleUpdate, ArticleDelete, markdown_uploader)
 
 
 urlpatterns = [
@@ -17,6 +18,9 @@ urlpatterns = [
    path('create/', ArticleCreate.as_view(), name='article_create'),
    path('<int:pk>/update/', ArticleUpdate.as_view(), name='article_update'),
    path('<int:pk>/delete/', ArticleDelete.as_view(), name='article_delete'),
+   path(
+      'api/uploader/', markdown_uploader, name='markdown_uploader_page'
+   ),
 #    path('categories/<int:pk>', CategoryNewsList.as_view(), name='news_category'),
 #    path('categories/<int:pk>/subscribe/', Subscribe.as_view(), name='news_subscribe'),
 #    path('new_author/', BeAuthor.as_view(), name='new_author'),

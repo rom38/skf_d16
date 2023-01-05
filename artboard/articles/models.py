@@ -2,7 +2,8 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.db import models
 
-from markdownx.models import MarkdownxField
+# from markdownx.models import MarkdownxField
+from martor.models import MartorField
 
 
 # Create your models here.
@@ -22,7 +23,7 @@ class Article(models.Model):
     User = get_user_model()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=64)
-    text = MarkdownxField()
+    text = MartorField()
     category = models.CharField(max_length=11, choices=TYPE, default='tank')
     time_create = models.DateTimeField(auto_now_add=True)
     # upload = models.FileField(upload_to='uploads/')

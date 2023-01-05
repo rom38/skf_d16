@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,11 +11,11 @@
             Default
             {% endblock title %}
         </title>
+        <link href="{% static 'plugins/css/bootstrap.min.css' %}" rel="stylesheet" />
+        {% block css %}{% endblock %}
 
-        {% load static %}
+
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-        <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
 
     </head>
     <body>
@@ -23,50 +24,64 @@
             <div class="container">
                 <!-- <a class="navbar-brand" href="#">Django flatpages</a> -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarResponsive"
-                        aria-controls="navbarResponsive" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/">Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'article_list' %}">Статьи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/news/search/">Поиск постов</a>
-                        </li>
-                        <li class="nav-item">
-                            {% if user.is_authenticated %}
-                            <a class="nav-link" href="#">
-                                Пользователь {{ user.username }}
-                            </a>
-                            {% else %}
-                            <a class="nav-link" href="{% url 'login' %}?next={{request.get_full_path}}">Вход</a>
-                            {% endif %}
-                        </li>
-                        <li class="nav-item">
-                            {% if user.is_authenticated %}
-                            <a class="nav-link" href="{% url 'logout' %}?next={{request.get_full_path}}">Выход</a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
+                data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'article_list' %}">Статьи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/news/search/">Поиск постов</a>
+                    </li>
+                    <li class="nav-item">
+                        {% if user.is_authenticated %}
+                        <a class="nav-link" href="#">
+                            Пользователь {{ user.username }}
+                        </a>
+                        {% else %}
+                        <a class="nav-link" href="{% url 'login' %}?next={{request.get_full_path}}">Вход</a>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item">
+                        {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'logout' %}?next={{request.get_full_path}}">Выход</a>
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
-         </nav>
-        <!-- Page content-->
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    {% block content %}
-                    {{ flatpage.content }}
-                    {% endblock content %}
-                </div>
+        </div>
+    </nav>
+    <!-- Page content-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                {% block messages %}
+                {% if messages %}
+                  <div class="messages">
+                    {% for message in messages %}
+                      <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endblock %}
+                {% block content %}
+                {{ flatpage.content }}
+                {% endblock content %}
             </div>
-         </div>
-    </body>
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'plugins/js/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/js/bootstrap.min.js' %}"></script>
+    {% block js %}{% endblock %}
+</body>
 </html>

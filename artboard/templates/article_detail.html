@@ -1,9 +1,16 @@
 <!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'default.html' %}
+{% load static %}
+{% load martortags %}
 
 {% block title %}
 Статья
 {% endblock title %}
+
+{% block css %}
+  <link href="{% static 'plugins/css/ace.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+  <link href="{% static 'martor/css/martor.bootstrap.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+{% endblock %}
 
 {% block content %}
 <h1>Статья</h1>
@@ -14,10 +21,10 @@
     <dd class="col-sm-9">{{ article.time_create | date:'d M Y' }}</dd>
     <dt class="col-sm-3">Заголовок:</dt>
     <dd class="col-sm-9">{{ article.title }}</dd>
-    <dt class="col-sm-3">Содержание:</dt>
-    <dd class="col-sm-9">{{ article.text }}</dd>
     <dt class="col-sm-3">Категория:</dt>
     <dd class="col-sm-9">{{ article.get_category_display }}</dd>
+    <dt class="col-sm-3">Содержание:</dt>
+    <dd class="col-sm-9">{{ article.text | safe_markdown }}</dd>
 </dl>
 {% if perms.news.delete_post %}
 <a href="{% url 'article_delete' article.id %}" class="btn btn-danger">Delete</a>
@@ -26,3 +33,12 @@
 <a href="{% url 'article_update' article.id %}" class="btn btn-primary">Update</a>
 {% endif %}
 {% endblock content %}
+
+{% block js %}
+  <script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
+  <script>
+    $('.martor-preview pre').each(function(i, block){
+        hljs.highlightBlock(block);
+    });
+  </script>
+{% endblock %}

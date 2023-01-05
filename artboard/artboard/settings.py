@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+import time
 
 from pathlib import Path
 
@@ -46,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'django_extensions',
-    'markdownx',
+    'martor',
+    # 'markdownx',
 
     'articles',
     'reguser',
@@ -167,3 +169,38 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 
 MARKDOWNX_MEDIA_PATH = "markdownx/"
+
+
+# Choices are: "semantic", "bootstrap"
+MARTOR_THEME = 'bootstrap'
+
+MARTOR_UPLOAD_PATH = 'images/uploads/{}'.format(time.strftime("%Y/%m/%d/"))
+MARTOR_UPLOAD_URL = '/articles/api/uploader/'  # change to local uploader
+
+# Global martor settings
+# Input: string boolean, `true/false`
+MARTOR_ENABLE_CONFIGS = {
+    'emoji': 'true',        # to enable/disable emoji icons.
+    'imgur': 'true',        # to enable/disable imgur/custom uploader.
+    'mention': 'true',     # to enable/disable mention
+    'jquery': 'true',    # to include/revoke jquery (require for admin default django)
+}
+
+MAX_IMAGE_UPLOAD_SIZE = 5242880 
+
+MARTOR_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.nl2br',
+    'markdown.extensions.smarty',
+    'markdown.extensions.fenced_code',
+
+    # Custom markdown extensions.
+    'martor.extensions.urlize',
+    'martor.extensions.del_ins',      # ~~strikethrough~~ and ++underscores++
+    'martor.extensions.mention',      # to parse markdown mention
+    'martor.extensions.emoji',        # to parse markdown emoji
+    'martor.extensions.mdx_video',    # to parse embed/iframe video
+    'martor.extensions.escape_html',  # to handle the XSS vulnerabilities
+]
+
+CSRF_COOKIE_HTTPONLY = False
