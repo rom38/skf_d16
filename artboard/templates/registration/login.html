@@ -25,10 +25,13 @@
 </tr>
 </table>
 
-<input type="submit" value="login">
+<input type="submit" value="Войти">
 <input type="hidden" name="next" value="{{ next }}">
 </form>
-
+<p></p>
+<div>
+<a href="{% url 'reg_user' %}" class="btn btn-primary">Зарегистрироваться</a>
+</div>
 {# Assumes you set up the password_reset view in your URLconf #}
 {# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
 

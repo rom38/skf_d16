@@ -2,7 +2,9 @@ from django.urls import path
 # Импортируем созданное нами представление
 from .views import (
    ArticleList, ArticleDetail, ArticleCreate,
-   ArticleUpdate, ArticleDelete, markdown_uploader)
+   ArticleUpdate, ArticleDelete, UserResponseCreate,
+   markdown_uploader
+   )
 
 
 urlpatterns = [
@@ -18,6 +20,7 @@ urlpatterns = [
    path('create/', ArticleCreate.as_view(), name='article_create'),
    path('<int:pk>/update/', ArticleUpdate.as_view(), name='article_update'),
    path('<int:pk>/delete/', ArticleDelete.as_view(), name='article_delete'),
+   path('<int:pk>/create_response/', UserResponseCreate.as_view(), name='response_create'),
    path(
       'api/uploader/', markdown_uploader, name='markdown_uploader_page'
    ),

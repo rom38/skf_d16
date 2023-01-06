@@ -5,15 +5,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Group, Permission
 from django.views import View
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.core.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_decode
+from django.contrib.contenttypes.models import ContentType
 
 from .forms import UserCreationForm, EmailVerifyForm
 from .utils import send_email_for_verify_2
+from articles.models import Article
 # Create your views here.
 
 User = get_user_model()
@@ -100,6 +103,14 @@ class EmailVerify(View):
             user = self.get_user(user_id)
             if user is not None and token_generator.check_token(user, token):
                 user.email_verify = True
+                # add user to common_user group
+                common_users, create = Group.objects.get_or_create(name="common_user")
+                if create:
+                    content_type = ContentType.objects.get_for_model(Article)
+                    article_permissions = Permission.objects.filter(content_type=content_type)
+                    for perm in article_permissions:
+                        common_users.permissions.add(perm)
+                user.groups.add(common_users)
                 user.save()
                 login(request, user)
                 return redirect('confirm_email')
