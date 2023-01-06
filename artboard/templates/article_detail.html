@@ -26,12 +26,12 @@
     <dt class="col-sm-3">Содержание:</dt>
     <dd class="col-sm-9">{{ article.text | safe_markdown }}</dd>
 </dl>
-{% if perms.news.delete_post %}
-<a href="{% url 'article_delete' article.id %}" class="btn btn-danger">Delete</a>
-{% endif %}
-{% if perms.news.change_post %}
-<a href="{% url 'article_update' article.id %}" class="btn btn-primary">Update</a>
-{% endif %}
+  {% if perms.articles.delete_article and author_user %}
+    <a href="{% url 'article_delete' article.id %}" class="btn btn-danger">Удалить</a>
+  {% endif %}
+  {% if perms.articles.change_article and author_user %}
+    <a href="{% url 'article_update' article.id %}" class="btn btn-primary">Изменить</a>
+  {% endif %}
 {% endblock content %}
 
 {% block js %}
