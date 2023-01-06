@@ -34,10 +34,22 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('article_detail', args=[str(self.id)])
 
+    def is_owner(self, user):
+        return self.author == user
+
 
 class UserResponse(models.Model):
     User = get_user_model()
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.author} {self.text}'
+
+    # def get_absolute_url(self):
+    #     return reverse('article_detail', args=[str(self.id)])
+
+    def is_owner(self, user):
+        return self.author == user
