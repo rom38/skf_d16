@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -186,7 +186,7 @@ MARTOR_ENABLE_CONFIGS = {
     'jquery': 'true',    # to include/revoke jquery (require for admin default django)
 }
 
-MAX_IMAGE_UPLOAD_SIZE = 5242880 
+MAX_IMAGE_UPLOAD_SIZE = 5242880
 
 MARTOR_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
