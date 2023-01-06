@@ -71,7 +71,11 @@
 <p></p>
 <div>
     {% if user.is_authenticated %}
+
         <a href="{% url 'article_create' %}" class="btn btn-primary">Написать новость</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+        <a href="{% url 'reg_user' %}" class="btn btn-primary">Зарегистрироваться</a>
     {% endif %}
 </div>
 {% endblock content %}
