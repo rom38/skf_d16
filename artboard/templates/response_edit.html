@@ -1,0 +1,32 @@
+{% extends 'default.html' %}
+{% load static %}
+
+{% block title %}
+Создать отклик
+{% endblock title %}
+
+{% block css %}
+  <link href="{% static 'martor/css/martor.bootstrap.min.css' %}" type="text/css" media="all" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<h1>Создать отклик</h1>
+<hr>
+
+<form class="form" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ form.text }}
+    </div>
+    <div class="form-group">
+      <button class="btn btn-success">
+        <i class="save icon"></i> Сохранить отклик
+      </button>
+    </div>
+  </form>
+
+{% endblock content %}
+
+{% block js %}
+  <script type="text/javascript" src="{% static 'martor/js/martor.bootstrap.min.js' %}"></script>
+{% endblock %}

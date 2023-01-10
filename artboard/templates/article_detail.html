@@ -32,6 +32,11 @@
   {% if perms.articles.change_article and author_user %}
     <a href="{% url 'article_update' article.id %}" class="btn btn-primary">Изменить</a>
   {% endif %}
+  {% if not author_user %}
+
+    <a href="{% url 'response_create' article.id %}" class="btn
+      btn-primary">Написать отклик</a>
+  {% endif%}
 {% endblock content %}
 
 {% block js %}

@@ -1,0 +1,88 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'default.html' %}
+
+{% block title %}
+Список откликов
+{% endblock title %}
+
+
+{% block content %}
+<h1>Все отклики</h1>
+
+
+<hr>
+<!-- Выводим новости, только если они есть с помощью тега if -->
+{% if responses %}
+<table class="table">
+    <tr>
+        <!-- <th>ID</th> -->
+        <th>Статья</th>
+        <th>Автор отклика</th>
+        <th>Автор статьи</th>
+        <th>Дата отклика</th>
+        <th>Текст</th>
+        <th>Статус отклика</th>
+        <th>Действие</th>
+
+    </tr>
+
+
+    {% for response in responses %}
+    <tr>
+        <!-- <td><a href="/news/{{neww.id}}"> {{neww.id }}</a></td> -->
+        <!-- <td> <a href="{% url 'response_detail' response.id
+                      %}">{{ article.title}}</a> </td> -->
+        <td>{{ response.article.title}}</td>
+        <td>{{ response.author}}</td>
+        <td>{{ response.article.author}}</td>
+        <td>{{ response.time_create | date:'d M Y'}}</td>
+        <td>{{ response.text }}</td>
+        <td>{% if response.status %}
+            Принят
+            {% else %}
+            Не принят
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'response_good' response.id  %}" class="btn
+            btn-primary">Принять</a>
+            <a href="{% url 'response_delete' response.id  %}" class="btn
+            btn-danger">Удалить</a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{# Добавляем пагинацию на страницу #}
+
+{# Информация о предыдущих страницах #}
+{% if page_obj.has_previous %}
+<a href="?page=1">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% endif %}
+
+{# Информация о текущей странице #}
+{{ page_obj.number }}
+
+{# Информация о следующих страницах #}
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+
+{% else %}
+<!-- Если новостей нет, говорим, что новостей нет ;) -->
+<h2>Откликов нет!</h2>
+
+{% endif %}
+<p></p>
+<div>
+</div>
+{% endblock content %}
