@@ -44,6 +44,8 @@ class UserResponse(models.Model):
     text = models.TextField()
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
+    time_create = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return f'{self.author} {self.text}'
