@@ -6,7 +6,7 @@ import os
 
 from django.views.generic import (
             ListView, DetailView, CreateView,
-            UpdateView, DeleteView)
+            UpdateView, DeleteView, View)
             # UpdateView, DeleteView, View)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.conf import settings
 from django.http import HttpResponse
+from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -130,7 +131,7 @@ class UserResponseCreate(LoginRequiredMixin, CreateView):
     # модель статей
     model = UserResponse
     # и новый шаблон, в котором используется форма.
-    template_name = 'user_respopnse_edit.html'
+    template_name = 'response_edit.html'
     # raise_exception = True
 
     # автоматически делаем авторизованного пользователя автором
@@ -143,6 +144,45 @@ class UserResponseCreate(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse('article_list')
+
+
+class UserResponseList(LoginRequiredMixin, ListView):
+    model = UserResponse
+    ordering = '-time_create'
+    template_name = 'response_list.html'
+    context_object_name = 'responses'
+    paginate_by = 10
+    # фильтруем отклики на статьи только авторизованного
+    # пользоавателя
+
+    def get_queryset(self):
+        return super().get_queryset().filter(article__author=self.request.user)
+
+class UserResponseDelete(LoginRequiredMixin, View):
+    # permission_required = ('news.delete_post',)
+    model = UserResponse
+
+    def get(self, request, pk_resp):
+        query = UserResponse.objects.filter(pk=pk_resp, article__author=request.user)
+        if query:
+            query.delete()
+            return HttpResponseRedirect(reverse('response_list'))
+        else:
+            return HttpResponseNotFound()
+
+
+class UserResponseGood(LoginRequiredMixin, View):
+    # permission_required = ('news.delete_post',)
+    model = UserResponse
+
+    def get(self, request, pk_resp):
+        query = UserResponse.objects.filter(pk=pk_resp, article__author=request.user)
+        if query:
+            query[0].status=True
+            query[0].save()
+            return HttpResponseRedirect(reverse('response_list'))
+        else:
+            return HttpResponseNotFound()
 
 
 # rewrite depricated request.is_ajax() for jquery

@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
    ArticleList, ArticleDetail, ArticleCreate,
    ArticleUpdate, ArticleDelete, UserResponseCreate,
-   markdown_uploader
+   UserResponseList, UserResponseGood,markdown_uploader,
+   UserResponseDelete
    )
 
 
@@ -20,7 +21,13 @@ urlpatterns = [
    path('create/', ArticleCreate.as_view(), name='article_create'),
    path('<int:pk>/update/', ArticleUpdate.as_view(), name='article_update'),
    path('<int:pk>/delete/', ArticleDelete.as_view(), name='article_delete'),
-   path('<int:pk>/create_response/', UserResponseCreate.as_view(), name='response_create'),
+   path('<int:pk>/response_create/', UserResponseCreate.as_view(), name='response_create'),
+   path('responses/<int:pk_resp>/good', UserResponseGood.as_view(),
+        name='response_good'),
+   path('responses/<int:pk_resp>/delete', UserResponseDelete.as_view(),
+        name='response_delete'),
+   path('response_list/', UserResponseList.as_view(),
+        name='response_list'),
    path(
       'api/uploader/', markdown_uploader, name='markdown_uploader_page'
    ),
