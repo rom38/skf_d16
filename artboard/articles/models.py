@@ -42,7 +42,7 @@ class UserResponse(models.Model):
     User = get_user_model()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, related_name='responses', on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     time_create = models.DateTimeField(auto_now_add=True)
 

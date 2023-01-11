@@ -38,7 +38,7 @@ def news_notify_weekly_task():
     #  Your job processing logic here...
     print('hello from job')
 
-
+# Извещаем автора статьи об отклике
 @shared_task
 def send_notify(article_title, response_text, username, subscribers):
     html_content = render_to_string(
@@ -47,6 +47,26 @@ def send_notify(article_title, response_text, username, subscribers):
             'username': username,
             'response_text': response_text,
             'link': f'{SITE_URL}/articles/response_list/'
+        }
+    )
+    msg = EmailMultiAlternatives(
+        subject='Новый отклик на статью',
+        body='',
+        from_email=DEFAULT_FROM_EMAIL,
+        to=subscribers,
+    )
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+# Извещаем автора отклика о его принятии
+@shared_task
+def send_notify_responser(article_title, article_url, response_text, username, subscribers):
+    html_content = render_to_string(
+        'response_notify_resp_auth.html', {
+            'article_title': article_title,
+            'username': username,
+            'response_text': response_text,
+            'link': f'{SITE_URL}{article_url}'
         }
     )
     msg = EmailMultiAlternatives(

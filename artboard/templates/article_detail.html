@@ -37,6 +37,32 @@
     <a href="{% url 'response_create' article.id %}" class="btn
       btn-primary">Написать отклик</a>
   {% endif%}
+
+  {% if article.responses %}
+  <p></p>
+  <h2>Список принятых откликов</h2>
+  <table class="table">
+      <tr>
+          <th>Автор отклика</th>
+          <th>Дата отклика</th>
+          <th>Текст отклика</th>
+      </tr>
+      {% for response in article.responses.all %}
+      {% if response.status %}
+      <tr>
+          <!-- <td><a href="/news/{{neww.id}}"> {{neww.id }}</a></td> -->
+          <!-- <td> <a href="{% url 'response_detail' response.id
+                        %}">{{ article.title}}</a> </td> -->
+          <td>{{ response.author}}</td>
+          <td>{{ response.time_create | date:'d M Y'}}</td>
+          <td>{{ response.text }}</td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+
+
+
 {% endblock content %}
 
 {% block js %}
