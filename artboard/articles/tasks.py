@@ -20,10 +20,10 @@ def news_notify_weekly_task():
     # subscribers
     print(subscribers)
     html_content = render_to_string(
-        'news_notify_weekly.html', {
+        'articles_notify_weekly.html', {
             # 'link': f'{SITE_URL}/news/{pk}',
-            'link': SITE_URL,
-            'posts': articles,
+            'link': f'{SITE_URL}',
+            'articles': articles,
         }
     )
 
