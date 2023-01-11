@@ -7,16 +7,19 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group, Permission
 from django.views import View
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.core.exceptions import ValidationError
-from django.utils.http import urlsafe_base64_decode
 from django.contrib.contenttypes.models import ContentType
+from django.utils.crypto import get_random_string
+from django.contrib.sites.shortcuts import get_current_site
 
-from .forms import UserCreationForm, EmailVerifyForm
-from .utils import send_email_for_verify_2
+
+
 from articles.models import Article
+from .forms import UserCreationForm, EmailVerifyForm
+from .tasks import send_email_verify
 # Create your views here.
 
 User = get_user_model()
@@ -32,10 +35,17 @@ class ArtLoginView(LoginView):
     def form_valid(self, form):
         user = form.get_user()
         print(f'user_name: {user.username}')
-        print(f'user_name: {user.email_verify}')
+        print(f'email_verify: {user.email_verify}')
         if not user.email_verify:
-            send_email_for_verify_2(self.request, user)
-            return redirect('verify_email')
+            RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789"
+            rnd_str_for_email = get_random_string(length=7, allowed_chars=RANDOM_STRING_CHARS)
+            self.request.session[rnd_str_for_email] = [user.id, token_generator.make_token(user)]
+            current_site = get_current_site(self.request)
+            send_email_verify.delay(
+                usr_id=user.id, domain=current_site.domain,
+                rnd_str_email=rnd_str_for_email
+                )
+            return redirect(reverse('verify_email'))
 
         return super().form_valid(form)
 
@@ -64,8 +74,16 @@ class RegUserView(View):
             username = form.cleaned_data.get('username')
             # user = authenticate(email=email, password=password)
             user = authenticate(username=username, password=password)
-            send_email_for_verify_2(request, user)
-            return redirect('verify_email')
+            # send_email_for_verify_2(request, user)
+            RANDOM_STRING_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789"
+            rnd_str_for_email = get_random_string(length=7, allowed_chars=RANDOM_STRING_CHARS)
+            request.session[rnd_str_for_email] = [user.id, token_generator.make_token(user)]
+            current_site = get_current_site(request)
+            send_email_verify.delay(
+                usr_id=user.id, domain=current_site.domain,
+                rnd_str_email=rnd_str_for_email
+                )
+            return redirect(reverse('verify_email'))
         context = {
             'form': form
         }
@@ -113,7 +131,7 @@ class EmailVerify(View):
                 user.groups.add(common_users)
                 user.save()
                 login(request, user)
-                return redirect('confirm_email')
+                return redirect(reverse('confirm_email'))
         return render(request, self.template_name, context)
 
     @staticmethod
