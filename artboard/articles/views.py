@@ -74,18 +74,7 @@ class ArticleDetail(DetailView):
     model = Article
     # queryset = Article.objects.all()
     def get_context_data(self, **kwargs):
-        # test logger
-        logger.warning("Warning from view listview ")
-        # С помощью super() мы обращаемся к родительским классам
-        # и вызываем у них метод get_context_data с теми же аргументами,
-        # что и были переданы нам.
-        # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
-        # К словарю добавим текущую дату в ключ 'time_now'.
-        # context['time_now'] = datetime.utcnow()
-        # Добавим ещё одну пустую переменную,
-        # чтобы на её примере рассмотреть работу ещё одного фильтра.
-        # context['next_sale'] = None
         user = self.request.user
         context['author_user'] = False
         if not user.is_anonymous and self.get_object().is_owner(user):
@@ -125,14 +114,10 @@ class ArticleList(ListView):
 
 
 class UserResponseCreate(LoginRequiredMixin, CreateView):
-    # Указываем нашу разработанную форму
     form_class = UserResponseForm
     # permission_required = ('articles.add_article',)
-    # модель статей
     model = UserResponse
-    # и новый шаблон, в котором используется форма.
     template_name = 'response_edit.html'
-    # raise_exception = True
 
     # автоматически делаем авторизованного пользователя автором
     def form_valid(self, form):

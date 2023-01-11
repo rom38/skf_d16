@@ -39,26 +39,48 @@
 {# Добавляем пагинацию на страницу #}
 
 {# Информация о предыдущих страницах #}
+<ul class="pagination">
 {% if page_obj.has_previous %}
-    <a href="?page=1">1</a>
+    <li class="page-item">
+        <a href="?page=1" class="page-link">1</a>
+    </li>
     {% if page_obj.previous_page_number != 1 %}
-        ...
-        <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+        <li class="page-item">
+                ...
+        </li>
+        <li class="page-item">
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">
+                {{ page_obj.previous_page_number }}
+            </a>
+        </li>
     {% endif %}
 {% endif %}
 
 {# Информация о текущей странице #}
-{{ page_obj.number }}
-
+<li class="page-item disabled">
+    <a href="#" class="page-link">
+    {{ page_obj.number }}
+    </a>
+</li>
 {# Информация о следующих страницах #}
 {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+    <li class="page-item">
+        <a href="?page={{ page_obj.next_page_number }}" class="page-link">
+            {{ page_obj.next_page_number }}
+        </a>
+    </li>
     {% if paginator.num_pages != page_obj.next_page_number %}
-        ...
-        <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        <li class="page-item">
+            ...
+        </li>
+        <li class="page-item">
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">
+                {{ page_obj.paginator.num_pages }}
+            </a>
+        </li>
     {% endif %}
 {% endif %}
-
+</ul>
 {% else %}
     <!-- Если новостей нет, говорим, что новостей нет ;) -->
     <h2>Статей нет!</h2>

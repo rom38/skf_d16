@@ -17,10 +17,10 @@
     <tr>
         <!-- <th>ID</th> -->
         <th>Статья</th>
-        <th>Автор отклика</th>
         <th>Автор статьи</th>
+        <th>Автор отклика</th>
         <th>Дата отклика</th>
-        <th>Текст</th>
+        <th>Текст отклика</th>
         <th>Статус отклика</th>
         <th>Действие</th>
 
@@ -33,8 +33,8 @@
         <!-- <td> <a href="{% url 'response_detail' response.id
                       %}">{{ article.title}}</a> </td> -->
         <td>{{ response.article.title}}</td>
-        <td>{{ response.author}}</td>
         <td>{{ response.article.author}}</td>
+        <td>{{ response.author}}</td>
         <td>{{ response.time_create | date:'d M Y'}}</td>
         <td>{{ response.text }}</td>
         <td>{% if response.status %}
@@ -44,8 +44,10 @@
             {% endif %}
         </td>
         <td>
-            <a href="{% url 'response_good' response.id  %}" class="btn
+            {% if not response.status %}
+                <a href="{% url 'response_good' response.id  %}" class="btn
             btn-primary">Принять</a>
+            {% endif %}
             <a href="{% url 'response_delete' response.id  %}" class="btn
             btn-danger">Удалить</a>
         </td>
