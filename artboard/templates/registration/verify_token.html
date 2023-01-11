@@ -25,7 +25,7 @@
 {# <input type="hidden" name="next" value="{{ next }}"> #}
 </form>
 <p> Повторно выполнить вход, с отсылкой токена на электронную почту</p>
-{% url 'login' %}
+<a href="{% url 'login' %}">Залогиниться</a>
 {# Assumes you set up the password_reset view in your URLconf #}
 {# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
 
