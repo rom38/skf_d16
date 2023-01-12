@@ -36,7 +36,8 @@ from martor.utils import LazyEncoder
 
 logger = logging.getLogger(__name__)
 
-
+# перегрузка класса, удалять и изменять статью может только ее автор
+# миксин нужен, чтобы нельзя было перейти по url
 class OwnerPermissionRequiredMixin(PermissionRequiredMixin):
 
     def has_permission(self):
