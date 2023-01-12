@@ -21,6 +21,7 @@ from django.urls import reverse
 
 from .models import Article, UserResponse
 from .forms import ArticleForm, UserResponseForm
+from .filter import UserResponseFilter
 
 from martor.utils import LazyEncoder
 
@@ -128,7 +129,16 @@ class UserResponseList(LoginRequiredMixin, ListView):
     # фильтруем отклики на статьи только аутентифицированного
     # пользоавателя
     def get_queryset(self):
-        return super().get_queryset().filter(article__author=self.request.user)
+        queryset = super().get_queryset().filter(article__author=self.request.user)
+        self.filterset = UserResponseFilter(self.request.GET, queryset)
+        # Возвращаем из функции отфильтрованный список товаров
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем в контекст объект фильтрации.
+        context['filterset'] = self.filterset
+        return context
 
 
 class UserResponseDelete(LoginRequiredMixin, View):

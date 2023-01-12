@@ -11,13 +11,25 @@
 
 
 <hr>
-<!-- Выводим новости, только если они есть с помощью тега if -->
-{% if responses %}
+
+{# Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе #}
+<form action="" method="get">
+    {{ filterset.form.non_field_errors }}
+
+    <div class="mb-3 row">
+
+        {{filterset.form.as_p}}
+        
+       
+    </div>
+    <input type="submit" class="mt-6 btn btn-primary" value="Найти" />
+</form>
 <table class="table">
     <tr>
         <!-- <th>ID</th> -->
         <th>Статья</th>
         <th>Автор статьи</th>
+        <th>Категория статьи</th>
         <th>Автор отклика</th>
         <th>Дата отклика</th>
         <th>Текст отклика</th>
@@ -34,6 +46,7 @@
                       %}">{{ article.title}}</a> </td> -->
         <td>{{ response.article.title}}</td>
         <td>{{ response.article.author}}</td>
+        <td>{{ response.article.get_category_display}}</td>
         <td>{{ response.author}}</td>
         <td>{{ response.time_create | date:'d M Y'}}</td>
         <td>{{ response.text }}</td>
@@ -45,7 +58,7 @@
         </td>
         <td>
             {% if not response.status %}
-                <a href="{% url 'response_good' response.id  %}" class="btn
+            <a href="{% url 'response_good' response.id  %}" class="btn
             btn-primary">Принять</a>
             {% endif %}
             <a href="{% url 'response_delete' response.id  %}" class="btn
@@ -79,11 +92,7 @@
 {% endif %}
 {% endif %}
 
-{% else %}
-<!-- Если новостей нет, говорим, что новостей нет ;) -->
-<h2>Откликов нет!</h2>
 
-{% endif %}
 <p></p>
 <div>
 </div>
