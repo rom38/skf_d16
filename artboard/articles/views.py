@@ -79,6 +79,8 @@ class ArticleDetail(DetailView):
         context['author_user'] = False
         if not user.is_anonymous and self.get_object().is_owner(user):
             context['author_user'] = True
+        responses = self.get_object().responses.filter(status=True)
+        context['responses'] = responses
         return context
 
 
@@ -111,6 +113,7 @@ class ArticleList(ListView):
 
     # def get_queryset(self):
     #     return super().get_queryset().filter(post_type=Post.news)
+
 
 
 class UserResponseCreate(LoginRequiredMixin, CreateView):

@@ -38,7 +38,7 @@
       btn-primary">Написать отклик</a>
   {% endif%}
 
-  {% if article.responses %}
+  {% if responses %}
   <p></p>
   <h2>Список принятых откликов</h2>
   <table class="table">
@@ -47,7 +47,7 @@
           <th>Дата отклика</th>
           <th>Текст отклика</th>
       </tr>
-      {% for response in article.responses.all %}
+      {% for response in responses %}
       {% if response.status %}
       <tr>
           <!-- <td><a href="/news/{{neww.id}}"> {{neww.id }}</a></td> -->
