@@ -1,5 +1,4 @@
 # from django.shortcuts import render
-import logging
 import json
 import uuid
 import os
@@ -7,7 +6,6 @@ import os
 from django.views.generic import (
             ListView, DetailView, CreateView,
             UpdateView, DeleteView, View)
-            # UpdateView, DeleteView, View)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import get_user_model
@@ -21,20 +19,11 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.urls import reverse
 
-
 from .models import Article, UserResponse
 from .forms import ArticleForm, UserResponseForm
 
-
-
-
 from martor.utils import LazyEncoder
 
-
-
-# Create your views here.
-
-logger = logging.getLogger(__name__)
 
 # перегрузка класса, удалять и изменять статью может только ее автор
 # миксин нужен, чтобы нельзя было перейти по url
@@ -42,11 +31,13 @@ class OwnerPermissionRequiredMixin(PermissionRequiredMixin):
 
     def has_permission(self):
         perms = self.get_permission_required()
-        # if not self.get_object().postAuthor.authorUser.id == self.request.user.id:
-        #     raise PermissionDenied()
         is_owner_func = getattr(self.get_object(), 'is_owner', None)
         if is_owner_func is None:
-            raise RuntimeError('mixin requires model {} to provide is_owner function)'.format(self.get_object()))
+            raise RuntimeError(
+                'mixin requires model {} to provide is_owner function)'.format(
+                    self.get_object()
+                    )
+                )
         if not self.get_object().is_owner(self.request.user):
             return self.handle_no_permission()
         return self.request.user.has_perms(perms)
@@ -74,6 +65,7 @@ class ArticleDetail(DetailView):
     context_object_name = 'article'
     model = Article
     # queryset = Article.objects.all()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -103,18 +95,9 @@ class ArticleDelete(OwnerPermissionRequiredMixin, DeleteView):
 class ArticleList(ListView):
     model = Article
     ordering = '-time_create'
-    # Указываем имя шаблона, в котором будут все инструкции о том,
-    # как именно пользователю должны быть показаны наши объекты
     template_name = 'list_articles.html'
-    # Это имя списка, в котором будут лежать все объекты.
-    # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'articles'
-    # Отфильтровываем из статей и новостей только новости
     paginate_by = 10
-
-    # def get_queryset(self):
-    #     return super().get_queryset().filter(post_type=Post.news)
-
 
 
 class UserResponseCreate(LoginRequiredMixin, CreateView):
@@ -128,7 +111,7 @@ class UserResponseCreate(LoginRequiredMixin, CreateView):
         # User = get_user_model()
         # form.instance.author = User.objects.get(id=self.request.user.id)
         form.instance.author = self.request.user
-        form.instance.article = Article.objects.get(pk = self.kwargs.get('pk'))
+        form.instance.article = Article.objects.get(pk=self.kwargs.get('pk'))
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -141,18 +124,21 @@ class UserResponseList(LoginRequiredMixin, ListView):
     template_name = 'response_list.html'
     context_object_name = 'responses'
     paginate_by = 10
-    # фильтруем отклики на статьи только авторизованного
-    # пользоавателя
 
+    # фильтруем отклики на статьи только аутентифицированного
+    # пользоавателя
     def get_queryset(self):
         return super().get_queryset().filter(article__author=self.request.user)
+
 
 class UserResponseDelete(LoginRequiredMixin, View):
     # permission_required = ('news.delete_post',)
     model = UserResponse
 
     def get(self, request, pk_resp):
-        query = UserResponse.objects.filter(pk=pk_resp, article__author=request.user)
+        query = UserResponse.objects.filter(
+            pk=pk_resp, article__author=request.user
+            )
         if query:
             query.delete()
             return HttpResponseRedirect(reverse('response_list'))
@@ -165,9 +151,11 @@ class UserResponseGood(LoginRequiredMixin, View):
     model = UserResponse
 
     def get(self, request, pk_resp):
-        query = UserResponse.objects.filter(pk=pk_resp, article__author=request.user)
+        query = UserResponse.objects.filter(
+            pk=pk_resp, article__author=request.user
+            )
         if query:
-            query[0].status=True
+            query[0].status = True
             query[0].save()
             return HttpResponseRedirect(reverse('response_list'))
         else:
@@ -207,14 +195,20 @@ def markdown_uploader(request):
                 to_MB = settings.MAX_IMAGE_UPLOAD_SIZE / (1024 * 1024)
                 data = json.dumps({
                     'status': 405,
-                    'error': _('Maximum image file is %(size)s MB.') % {'size': to_MB}
+                    'error': _(
+                        'Maximum image file is %(size)s MB.'
+                        ) % {'size': to_MB}
                 }, cls=LazyEncoder)
                 return HttpResponse(
                     data, content_type='application/json', status=405)
 
-            img_uuid = "{0}-{1}".format(uuid.uuid4().hex[:10], image.name.replace(' ', '-'))
+            img_uuid = "{0}-{1}".format(
+                uuid.uuid4().hex[:10], image.name.replace(' ', '-')
+                )
             tmp_file = os.path.join(settings.MARTOR_UPLOAD_PATH, img_uuid)
-            def_path = default_storage.save(tmp_file, ContentFile(image.read()))
+            def_path = default_storage.save(
+                tmp_file, ContentFile(image.read())
+                )
             img_url = os.path.join(settings.MEDIA_URL, def_path)
 
             data = json.dumps({
